@@ -1,4 +1,4 @@
-using System.Diagnostics;
+
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
@@ -21,8 +21,24 @@ namespace LittleFoxLite
 		public bool cursorLocked = true;
 		public bool cursorInputForLook = true;
 
-#if ENABLE_INPUT_SYSTEM 
-		public void OnMove(InputValue value)
+#if ENABLE_INPUT_SYSTEM
+        public void OnExitEvent()
+        {
+			InteractiveHandel.instance.ChangeToNormalState();
+			if (InteractiveHandel.instance.isInDialogue)
+			{
+				InteractiveHandel.instance.OutDialoguePerform();
+			}
+        }
+        public void OnEsc(InputValue value)
+        {
+			MasterMenuManager.instance.OnESCPressed();
+        }
+        public void OnEvent(InputValue value)
+        {
+            InteractiveHandel.instance.PerformInteractive();
+        }
+        public void OnMove(InputValue value)
 		{
 			MoveInput(value.Get<Vector2>());
 		}
@@ -54,6 +70,12 @@ namespace LittleFoxLite
 		{
 			ShootInput(value.isPressed);
 		}
+		public void OnReload(InputValue value)
+		{
+			if (value.isPressed)
+				PlayerController.Instance.currentWeapon.OnReload();
+		}
+
 #endif
 
 

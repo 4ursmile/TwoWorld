@@ -14,6 +14,9 @@ namespace LittleFoxLite
     {
         public override void EnterState(PlayerController player)
         {
+            if (player.playerAnimator != null)
+                player.ChangeAnimatorState(player.aniStateEvent, true);
+
         }
         public override void UpdateState(PlayerController player)
         {
@@ -21,6 +24,8 @@ namespace LittleFoxLite
         }
         public override void ExitState(PlayerController player)
         {
+            player.ChangeAnimatorState(player.aniStateEvent, false);
+
         }
     }
     public class NormalState : BaseState
@@ -28,6 +33,9 @@ namespace LittleFoxLite
         public override void EnterState(PlayerController player)
         {
             player.jumpAction += player.HandleJump;
+            if (player.playerAnimator != null)
+                player.ChangeAnimatorState(player.aniStateNormal, true);
+
 
         }
         public override void UpdateState(PlayerController player)
@@ -37,13 +45,16 @@ namespace LittleFoxLite
         public override void ExitState(PlayerController player)
         {
             player.jumpAction -= player.HandleJump;
+            player.ChangeAnimatorState(player.aniStateNormal, false);
+
         }
     }
     public class ShootState : BaseState
     {
         public override void EnterState(PlayerController player)
         {
-            player.ChangeAnimatorState(true);
+            if (player.playerAnimator != null)
+            player.ChangeAnimatorState(player.aniStateShoot, true);
             player.ShowGun();
             player.jumpAction += player.HandleJumpInShoot;
         }
@@ -56,7 +67,8 @@ namespace LittleFoxLite
         {
             player.StartCoroutine(player.HideGun());
             player.jumpAction -= player.HandleJumpInShoot;
-            player.ChangeAnimatorState(false);
+            player.ChangeAnimatorState(player.aniStateShoot, false);
+
 
         }
     }

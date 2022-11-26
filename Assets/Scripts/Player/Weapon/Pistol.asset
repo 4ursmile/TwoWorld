@@ -21,3 +21,4 @@ MonoBehaviour:
   Damage: 5
   BullperRound: 10
   MaxRound: 10
+  ReloadTime: 2

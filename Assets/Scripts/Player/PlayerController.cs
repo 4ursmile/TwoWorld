@@ -11,6 +11,8 @@ using UnityEngine.InputSystem;
 using UnityEngine.Scripting.APIUpdating;
 using UnityEngine.UIElements;
 using DG.Tweening;
+using Unity.VisualScripting;
+
 namespace LittleFoxLite
 {
     [RequireComponent(typeof(CharacterController))]
@@ -33,13 +35,14 @@ namespace LittleFoxLite
         CharacterController playerController;
         public InputManager _input;
         PlayerInput _playerInput;
-        Animator playerAnimator;
+        public Animator playerAnimator;
         GameObject _maincamera;
         public static PlayerController Instance;
         public HealthSystem<PlayerController> healthSystem;
         BullletPooling bullpool;
         [SerializeField] WeaponBase gunWeapon;
-        CurrentWeapon currentWeapon;
+        public CurrentWeapon currentWeapon;
+        [SerializeField] PlayerSound playerSound;
         /// <summary>
         /// Animation id
         /// </summary>
@@ -47,26 +50,30 @@ namespace LittleFoxLite
         int _aniBoolGround;
         int _aniBoolFreeFall;
         int aniBoolJump;
-        int aniStateNormal;
+        public int aniStateNormal;
+        public int aniStateShoot;
+        public int aniStateEvent;
         int aniFloatXdir;
         int aniFloatYdir;
-        public void ChangeAnimatorState(bool type)
-        {
-            playerAnimator.SetBool(aniStateNormal, type);
-        }
+        int aniBoolReload;
+
         void AssignAnimattionID()
         {
              aniBoolJump = Animator.StringToHash("Jump");
             _aniIntSpeed = Animator.StringToHash("Speed");
             _aniBoolGround = Animator.StringToHash("Grounded");
             _aniBoolFreeFall = Animator.StringToHash("FreeFall");
-            aniStateNormal = Animator.StringToHash("IsShoot");
+            aniStateShoot = Animator.StringToHash("IsShoot");
+            aniStateNormal = Animator.StringToHash("IsNormal");
+            aniStateEvent = Animator.StringToHash("IsEvent");
             aniFloatXdir = Animator.StringToHash("XDirection");
             aniFloatYdir = Animator.StringToHash("YDirection");
+            aniBoolReload = Animator.StringToHash("Reloading");
+
         }
         [Header("State Manager")]
         [SerializeField] PlayerStateType startState;
-        StateManager stateManager;
+        public StateManager stateManager;
         private void Awake()
         {
             if (Instance == null) Instance = this;
@@ -82,6 +89,18 @@ namespace LittleFoxLite
             currentWeapon = GetComponent<CurrentWeapon>();
             currentWeapon.weapon = gunWeapon;
         }
+        public void AudioFootSepSound()
+        {
+            float curentVelocity = Mathf.Abs(verticalVelocity);
+            float scale = curentVelocity / Mathf.Abs(gravity);
+            scale = scale>1?1:scale;
+            playerSound.FootStep(1+scale);
+        }
+        public void AudioReloadSound()
+        {
+            playerSound.ReloadSound();
+        }
+
         [Header("PlayerStatus")]
         [SerializeField] int maxHealth;
         // Start is called before the first frame update
@@ -105,6 +124,18 @@ namespace LittleFoxLite
         {
 
         }
+        public void ReloadAction(float value)
+        {
+            if (value == 1)
+            {
+                playerAnimator.SetLayerWeight(1, value);
+                playerAnimator.SetBool(aniBoolReload, true);
+            } else
+            {
+                playerAnimator.SetLayerWeight(1, value);
+                playerAnimator.SetBool(aniBoolReload, false);
+            }
+        }
         void OnUIHealthChange(float value)
         {
 
@@ -117,11 +148,17 @@ namespace LittleFoxLite
                 currentWeapon.ReadyToShoot = false;
                 currentWeapon.ShootBulletCount();
                 Invoke(nameof(ResetShootTime), gunWeapon.FireRate);
+                playerSound.ShootSound();
             }
         }
         void ResetShootTime()
         {
+            if (currentWeapon.onReload) return;
             currentWeapon.ReadyToShoot = true;
+        }
+        public void ChangeAnimatorState(int State, bool value)
+        {
+            playerAnimator.SetBool(State, value);
         }
         // Update is called once per frame
         void Update()
