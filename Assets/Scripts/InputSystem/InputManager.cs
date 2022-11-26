@@ -13,7 +13,7 @@ namespace LittleFoxLite
 		public Vector2 look;
 		public bool jump;
 		public bool sprint;
-
+		public bool Fire1;
 		[Header("Movement Settings")]
 		public bool analogMovement;
 
@@ -50,6 +50,10 @@ namespace LittleFoxLite
 			if (value.isPressed)
 				PlayerController.Instance.ChangeBetweenToState();
 		}
+		public void OnShoot (InputValue value)
+		{
+			ShootInput(value.isPressed);
+		}
 #endif
 
 
@@ -71,6 +75,10 @@ namespace LittleFoxLite
 		public void SprintInput(bool newSprintState)
 		{
 			sprint = newSprintState;
+		}
+		public void ShootInput(bool newShootState)
+		{
+			Fire1 = newShootState;
 		}
 
 		//private void OnApplicationFocus(bool hasFocus)

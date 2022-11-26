@@ -14,7 +14,7 @@ using DG.Tweening;
 namespace LittleFoxLite
 {
     [RequireComponent(typeof(CharacterController))]
-    public class PlayerController : MonoBehaviour
+    public class PlayerController : MonoBehaviour,  iDamagetable
     {
         public delegate void VoidEvent();
         public VoidEvent jumpAction;
@@ -36,7 +36,10 @@ namespace LittleFoxLite
         Animator playerAnimator;
         GameObject _maincamera;
         public static PlayerController Instance;
-
+        public HealthSystem<PlayerController> healthSystem;
+        BullletPooling bullpool;
+        [SerializeField] WeaponBase gunWeapon;
+        CurrentWeapon currentWeapon;
         /// <summary>
         /// Animation id
         /// </summary>
@@ -75,13 +78,51 @@ namespace LittleFoxLite
             _input = GetComponent<InputManager>();
             playerController = GetComponent<CharacterController>();
             _playerInput = GetComponent<PlayerInput>();
+            bullpool = GetComponent<BullletPooling>();
+            currentWeapon = GetComponent<CurrentWeapon>();
+            currentWeapon.weapon = gunWeapon;
         }
+        [Header("PlayerStatus")]
+        [SerializeField] int maxHealth;
         // Start is called before the first frame update
         void Start()
         {
             gunObject.SetActive(false);
+            healthSystem = new HealthSystem<PlayerController>(this, maxHealth);
+            healthSystem.takeDamageAction += DamageAction;
+            healthSystem.dieAction += DieAction;
+            healthSystem.changeUIHealth += OnUIHealthChange;
         }
+        public void TakeDamage(int damge)
+        {
+            healthSystem.TakeDamage(damge);
+        }
+        void DamageAction()
+        {
 
+        }
+        void  DieAction()
+        {
+
+        }
+        void OnUIHealthChange(float value)
+        {
+
+        }
+        public void Shoot()
+        {
+            if (_input.Fire1 && currentWeapon.ReadyToShoot)
+            {
+                bullpool.ShootAction();
+                currentWeapon.ReadyToShoot = false;
+                currentWeapon.ShootBulletCount();
+                Invoke(nameof(ResetShootTime), gunWeapon.FireRate);
+            }
+        }
+        void ResetShootTime()
+        {
+            currentWeapon.ReadyToShoot = true;
+        }
         // Update is called once per frame
         void Update()
         {
@@ -304,7 +345,8 @@ namespace LittleFoxLite
             }
             else if (stateManager.CurrentType == PlayerStateType.Normal)
             {
-                stateManager.SwitchState(PlayerStateType.Shoot);
+                if (GameManager.instance.gameState == GameState.inCombat)
+                    stateManager.SwitchState(PlayerStateType.Shoot);
 
             }
         }

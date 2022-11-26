@@ -50,6 +50,7 @@ namespace LittleFoxLite
         public override void UpdateState(PlayerController player)
         {
             player.HandleMovementShoot();
+            player.Shoot();
         }
         public override void ExitState(PlayerController player)
         {

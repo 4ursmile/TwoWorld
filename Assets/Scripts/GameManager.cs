@@ -12,8 +12,15 @@ using UnityEngine;
 /// </summary>
 namespace LittleFoxLite
 {
-    public class GameManagere : MonoBehaviour
+    public class GameManager : MonoBehaviour
     {
+        public GameState gameState;
+        public static GameManager instance;
+        private void Awake()
+        {
+           if (instance == null) instance = this;
+            gameState = GameState.inCombat;
+        }
         // Start is called before the first frame update
         void Start()
         {
@@ -25,6 +32,10 @@ namespace LittleFoxLite
         {
 
         }
+    }
+    public enum GameState
+    {
+        inEvent, inNormal, inCombat
     }
 }
 
