@@ -56,6 +56,7 @@ namespace LittleFoxLite
         int aniFloatXdir;
         int aniFloatYdir;
         int aniBoolReload;
+        public UIManager playerUI;
 
         void AssignAnimattionID()
         {
@@ -88,6 +89,7 @@ namespace LittleFoxLite
             bullpool = GetComponent<BullletPooling>();
             currentWeapon = GetComponent<CurrentWeapon>();
             currentWeapon.weapon = gunWeapon;
+            playerUI = GetComponent<UIManager>();
         }
         public void AudioFootSepSound()
         {
@@ -382,7 +384,6 @@ namespace LittleFoxLite
             }
             else if (stateManager.CurrentType == PlayerStateType.Normal)
             {
-                if (GameManager.instance.gameState == GameState.inCombat)
                     stateManager.SwitchState(PlayerStateType.Shoot);
 
             }

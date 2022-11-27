@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 
 namespace LittleFoxLite
@@ -57,7 +58,7 @@ namespace LittleFoxLite
         }
         void GotoNext()
         {
-
+            SceneManager.LoadScene(2);
         }
         public void NextDialogue()
         {

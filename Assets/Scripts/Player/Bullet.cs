@@ -21,5 +21,10 @@ public class Bullet : MonoBehaviour
     {
         transform.position += transform.forward*flySpeed*Time.deltaTime;
     }
-    
+    private void OnCollisionEnter(Collision collision)
+    {
+        EnemyBase e = collision.gameObject.GetComponent<EnemyBase>();
+        e.TakeDamage(Random.Range(2,5));
+        Recursion();
+    }
 }

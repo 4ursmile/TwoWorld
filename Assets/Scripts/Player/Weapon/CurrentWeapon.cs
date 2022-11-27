@@ -18,10 +18,13 @@ public class CurrentWeapon: MonoBehaviour
         currentBullet = maxBullet - weapon.BullperRound;
         CurrentBulletinRound = weapon.BullperRound;
         ReadyToShoot = true;
+        PlayerController.Instance.playerUI.ChangeBullet(CurrentBulletinRound, currentBullet);
+
     }
     public void ShootBulletCount()
     {
        CurrentBulletinRound -= 1;
+        PlayerController.Instance.playerUI.ChangeBullet(CurrentBulletinRound, currentBullet);
         if (CurrentBulletinRound <=0)
         {
             if (currentBullet > 0)
@@ -47,6 +50,8 @@ public class CurrentWeapon: MonoBehaviour
     {
         CurrentBulletinRound = currentBullet > weapon.BullperRound ? weapon.BullperRound : currentBullet;
         currentBullet -= CurrentBulletinRound;
+        PlayerController.Instance.playerUI.ChangeBullet(CurrentBulletinRound, currentBullet);
+
         ReadyToShoot = true;
         onReload = false;
         PlayerController.Instance.ReloadAction(0);

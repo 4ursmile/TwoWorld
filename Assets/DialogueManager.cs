@@ -12,7 +12,7 @@ public class DialogueManager : MonoBehaviour
     public TextMeshProUGUI gText;
     private void Awake()
     {
-        instance = this;
+        if (instance == null) instance = this;
         source = GetComponent<AudioSource>();
         source.ignoreListenerPause = true;
     }

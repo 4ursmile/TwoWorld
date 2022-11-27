@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.SceneManagement;
 /// <summary>
 /// LittleFoxLite is a special version that is prepared for UITGameHackrathon2022 
 /// This is a part of LittleFox Template is owned by Ly
@@ -16,6 +17,7 @@ namespace LittleFoxLite
     {
         public GameState gameState;
         public static GameManager instance;
+        public bool canAttack;
         private void Awake()
         {
             if (instance == null) instance = this;
@@ -43,6 +45,10 @@ namespace LittleFoxLite
         public void ExitGame()
         {
             Application.Quit();
+        }
+        public void OnComBackMenuPres()
+        {
+            SceneManager.LoadScene(0);
         }
     }
     public enum GameState

@@ -11,7 +11,7 @@ public class MasterMenuManager : MonoBehaviour
     // Start is called before the first frame update
     private void Awake()
     {
-            instance = this;
+         if (instance == null) instance = this;
     }
     void Start()
     {
@@ -61,5 +61,9 @@ public class MasterMenuManager : MonoBehaviour
     public void OnChangeSoundSlider(Slider slider)
     {
         AudioListener.volume = slider.value;
+    }
+    public void OnQuitButtonPress()
+    {
+        Application.Quit();
     }
 }
